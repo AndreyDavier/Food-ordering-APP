@@ -1,7 +1,8 @@
 import { FC } from 'react';
 import styles from './Layout.module.scss';
-import { Link, Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
 import Button from '../../components/Button/Button';
+import cn from 'classnames';
 
 export const Layout: FC = () => {
 	return (
@@ -15,21 +16,25 @@ export const Layout: FC = () => {
 					<div className={styles['email']}>newemail@mail.com</div>
 				</div>
 				<div className={styles['menu']}>
-					<Link to="/" className={styles['link']}>
+					<NavLink to="/" className={({ isActive }) => cn(styles['link'], {
+						[styles.active]: isActive
+					})}>
 						<img src="/menuIcon.svg" alt="Menu" />
 						Menu
-					</Link>
-					<Link to="/cart" className={styles['link']}>
+					</NavLink>
+					<NavLink to="/cart" className={({ isActive }) => cn(styles['link'], {
+						[styles.active]: isActive
+					})}>
 						<img src="/cartIcon.svg" alt="Cart" />
 						Корзина
-					</Link>
+					</NavLink>
 				</div>
 
 				<Button className={styles['exit']}>
 					<img src="/exit-icon.svg" alt="exit" />
 				</Button>
 			</div>
-			<div>
+			<div className={styles['contents']}>
 				<Outlet />
 			</div>
 		</div >
