@@ -3,9 +3,9 @@ import { ButtonProps } from './Button.props';
 import styles from './Button.module.scss';
 import cn from 'classnames';
 
-const Button: FC<ButtonProps> = ({ children, appearenc = 'small', className, ...props }) => {
+const Button: FC<ButtonProps> = ({ children, appearence = 'small', className, ...props }) => {
 	return (
-		<button className={cn(styles['button'], styles['accent'], className, { [styles['small']]: appearenc === 'small', [styles['big']]: appearenc === 'big' })} {...props}>{children}</button>
+		<button className={cn(styles['button'], styles['accent'], className, { [styles['small']]: appearence === 'small', [styles['big']]: appearence === 'big' })} {...props}>{children}</button>
 	);
 };
 

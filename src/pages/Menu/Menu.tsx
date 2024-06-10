@@ -2,21 +2,34 @@ import { FC, useEffect, useState } from 'react';
 import { Headling } from '../../components/Headling/Headling';
 import SearchInput from '../../components/SearchInput/SearchInput';
 import styles from './Menu.module.scss';
-import { ProductCard } from '../../components/ProductCard/ProductCard';
 import { PREFIX } from '../../helpers/Api';
-import { Product } from '../../interfaces/product.interface';
-import axios from 'axios';
+import { Products } from '../../interfaces/product.interface';
+import axios, { AxiosError } from 'axios';
+import { MenuList } from './MenuList/MenuList';
 
 export const Menu: FC = () => {
 
-	const [products, setProducts] = useState<Product[]>([]);
+	const [products, setProducts] = useState<Products[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string | undefined>();
 
 	const getMenu = async () => {
 		try {
-			const { data } = await axios.get<Product[]>(`${PREFIX}/products`);
+			setIsLoading(true);
+			await new Promise<void>((resolve) => {
+				setTimeout(() => {
+					resolve();
+				}, 2000);
+			});
+			const { data } = await axios.get<Products[]>(`${PREFIX}/products`);
 			setProducts(data);
+			setIsLoading(false);
 		} catch (e) {
 			console.error(e);
+			if (e instanceof AxiosError) {
+				setError(e.message);
+			}
+			setIsLoading(false);
 			return;
 		}
 	};
@@ -32,20 +45,13 @@ export const Menu: FC = () => {
 				<SearchInput placeholder='Введите блюдо или состав' />
 			</div >
 			<div>
-				{products.map(p => (
-					<ProductCard
-						key={p.id}
-						id={p.id}
-						name={p.name}
-						description={p.ingredients.join(', ')}
-						rating={p.rating}
-						price={p.price}
-						image={p.image}
-					/>
-				))}
-
+				{error && <>{error}</>}
+				{!isLoading && <MenuList products={products} />}
+				{isLoading && <>Загрузка....</>}
 			</div>
 		</>
 
 	);
 };
+
+export default Menu;

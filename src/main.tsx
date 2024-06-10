@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.tsx';
 import './index.css';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import { Menu } from './pages/Menu/Menu';
+import { RouterProvider, createBrowserRouter, defer } from 'react-router-dom';
 import { Cart } from './pages/Cart/Cart';
 import { ErrorPage } from './pages/ErrorPage/ErrorPage';
-import { Layout } from './layout/Layout/Layout.tsx';
+import { Layout } from './layout/Menu/Layout.tsx';
 import { Product } from './pages/Product/Product.tsx';
+import axios from 'axios';
+import { PREFIX } from './helpers/Api.ts';
+import { AuthLayout } from './layout/Auth/AuthLoyout.tsx';
+import { Login } from './pages/Login/Login.tsx';
+import { Register } from './pages/Register/Register.tsx';
 
+const Menu = lazy(() => import('./pages/Menu/Menu'));
 
 const router = createBrowserRouter([
 	{
@@ -17,7 +21,11 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: '/',
-				element: <Menu />
+				element: (
+					<Suspense fallback={<>Загрузка...</>}>
+						<Menu />
+					</Suspense>
+				)
 			},
 			{
 				path: '/cart',
@@ -25,7 +33,29 @@ const router = createBrowserRouter([
 			},
 			{
 				path: '/product/:id',
-				element: <Product />
+				element: <Product />,
+				errorElement: <>Ошибка</>,
+				loader: async ({ params }) => {
+					return defer({
+						data: axios
+							.get(`${PREFIX}/products/${params.id}`)
+							.then((data) => data)
+					});
+				}
+			}
+		]
+	},
+	{
+		path: '/auth',
+		element: <AuthLayout />,
+		children: [
+			{
+				path: 'login',
+				element: <Login />
+			},
+			{
+				path: 'register',
+				element: <Register />
 			}
 		]
 	},
@@ -35,12 +65,8 @@ const router = createBrowserRouter([
 	}
 ]);
 
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
 	<React.StrictMode>
-		<RouterProvider router={router}>
-
-		</RouterProvider>
+		<RouterProvider router={router}></RouterProvider>
 	</React.StrictMode>
-
 );
