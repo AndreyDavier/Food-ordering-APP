@@ -1,5 +1,5 @@
 import { ProductCard } from '../../../components/ProductCard/ProductCard';
-import { MenuListProps } from './menuList.props';
+import { MenuListProps } from './MenuList.props';
 import styles from './MenuList.module.scss';
 
 export function MenuList({ products }: MenuListProps) {

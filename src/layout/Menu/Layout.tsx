@@ -3,12 +3,16 @@ import styles from './Layout.module.scss';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import Button from '../../components/Button/Button';
 import cn from 'classnames';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../store/store';
+import { userActions } from '../../store/user.slice';
 
 export const Layout: FC = () => {
 	const navigare = useNavigate();
+	const dispatch = useDispatch<AppDispatch>()
 
 	const logout = () => {
-		localStorage.removeItem('jwt');
+		dispatch(userActions.logout())
 		navigare('/auth/login');
 	};
 
@@ -30,7 +34,7 @@ export const Layout: FC = () => {
 						}
 					>
 						<img src="/menuIcon.svg" alt="Menu" />
-            Menu
+						Menu
 					</NavLink>
 					<NavLink
 						to="/cart"
@@ -41,13 +45,13 @@ export const Layout: FC = () => {
 						}
 					>
 						<img src="/cartIcon.svg" alt="Cart" />
-            Корзина
+						Корзина
 					</NavLink>
 				</div>
 
 				<Button className={styles['exit']} onClick={logout}>
 					<img src="/exit-icon.svg" alt="exit" />
-          Выход
+					Выход
 				</Button>
 			</div>
 			<div className={styles['contents']}>

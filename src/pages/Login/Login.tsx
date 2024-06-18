@@ -1,82 +1,62 @@
-import { FC, FormEvent, useState } from 'react';
-import { Headling } from '../../components/Headling/Headling';
-import Input from '../../components/Input/Input';
-import Button from '../../components/Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
+import Button from '../../components/Button/Button';
+import Input from '../../components/Input/Input';
 import styles from './Login.module.scss';
-import axios, { AxiosError } from 'axios';
-import { PREFIX } from '../../helpers/Api';
-import { LoginRespons } from '../../interfaces/auth.interface';
+import { FormEvent, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispath, RootState } from '../../store/store';
+import { login, userActions } from '../../store/user.slice';
+import { Headling } from '../../components/Headling/Headling';
 
-interface LoginForm {
-  email: {
-    value: string;
-  };
-  password: {
-    value: string;
-  };
+export type LoginForm = {
+	email: {
+		value: string;
+	};
+	password: {
+		value: string;
+	};
 }
 
-export const Login: FC = () => {
-	const [error, setError] = useState<string | undefined>();
+export function Login() {
 	const navigate = useNavigate();
+	const dispatch = useDispatch<AppDispath>();
+	const { jwt, loginErrorMessage } = useSelector((s: RootState) => s.user);
 
-	const sumbit = async (e: FormEvent) => {
-		e.preventDefault;
-		setError(undefined);
+	useEffect(() => {
+		if (jwt) {
+			navigate('/');
+		}
+	}, [jwt, navigate]);
+
+	const submit = async (e: FormEvent) => {
+		e.preventDefault();
+		dispatch(userActions.clearLoginError());
 		const target = e.target as typeof e.target & LoginForm;
 		const { email, password } = target;
 		await sendLogin(email.value, password.value);
 	};
 
 	const sendLogin = async (email: string, password: string) => {
-		try {
-			const { data } = await axios.post<LoginRespons>(`${PREFIX}/auth/login`, {
-				email,
-				password
-			});
-
-			console.log(data);
-			localStorage.setItem('jwt', data.access_token);
-			navigate('/');
-		} catch (e) {
-			if (e instanceof AxiosError) {
-				setError(e.response?.data.message);
-			}
-		}
+		dispatch(login({ email, password }));
 	};
 
-	return (
-		<div className={styles['login']}>
-			{error && <div className={styles['error']}></div>}
-
-			<Headling>Вход</Headling>
-			<form className={styles['form']} onSubmit={sumbit}>
-				<div className={styles['field']}>
-					<label htmlFor="">Ваш email</label>
-					<Input
-						id="email"
-						autoComplete="email"
-						name="email"
-						placeholder="Email"
-					/>
-				</div>
-				<div className={styles['field']}>
-					<label htmlFor="">Ваш пароль</label>
-					<Input
-						id="password"
-						name="password"
-						type="password"
-						placeholder="Password"
-						autoComplete="password"
-					/>
-				</div>
-				<Button appearence="big">Вход</Button>
-			</form>
-			<div className={styles['links']}>
-				<div>Нет аккаунта</div>
-				<Link to="/auth/register">Зарегистрироваться</Link>
+	return <div className={styles['login']}>
+		<Headling>Вход</Headling>
+		{loginErrorMessage && <div className={styles['error']}>{loginErrorMessage}</div>}
+		<form className={styles['form']} onSubmit={submit}>
+			<div className={styles['field']}>
+				<label htmlFor="email">Ваш email</label>
+				<Input id="email" name='email' placeholder='Email' />
 			</div>
+			<div className={styles['field']}>
+				<label htmlFor="password">Ваш пароль</label>
+				<Input id="password" name='password' type="password" placeholder='Пароль' />
+			</div>
+			<Button appearence="big">Вход</Button>
+		</form>
+		<div className={styles['links']}>
+			<div>Нет акканута?</div>
+			<Link to="/auth/register">Зарегистрироваться</Link>
 		</div>
-	);
-};
+	</div>;
+}
