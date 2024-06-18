@@ -12,7 +12,7 @@ export interface UserPersistentState {
 
 export interface UserState {
     jwt: string | null;
-    loginErrorMessage?: string
+    loginErrorMessage?: string;
 }
 
 const initialState: UserState = {
