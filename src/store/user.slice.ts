@@ -11,7 +11,7 @@ export interface UserPersistentState {
 }
 
 export interface UserState {
-    jwt: string | null;
+    jwt: string | null
     loginErrorMessage?: string;
 }
 
