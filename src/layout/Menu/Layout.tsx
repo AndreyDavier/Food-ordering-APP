@@ -52,9 +52,8 @@ export const Layout: FC = () => {
 						}
 					>
 						<img src="/cartIcon.svg" alt="Cart" />
-						Корзина
+						Корзина <span className={styles["cart-count"]}>{items.reduce((acc, item) => acc += item.count, 0)}</span>
 					</NavLink>
-					{items.reduce((acc, item) => acc += item.count, 0)}
 				</div>
 
 				<Button className={styles['exit']} onClick={logout}>
