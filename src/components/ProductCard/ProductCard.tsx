@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, MouseEvent } from 'react';
 import styles from './ProductCard.module.scss';
 import { ProductCardProps } from './ProductCard.props';
 import { Link } from 'react-router-dom';
@@ -14,7 +14,7 @@ export const ProductCard: FC<ProductCardProps> = (props) => {
 		e.preventDefault
 		dispatch(cartActions.add(props.id))
 	}
-	
+
 	return (
 		<Link to={`/product/${props.id}`} className={styles['link']}>
 			<div className={styles['card']}>
