@@ -1,3 +1,36 @@
-.headling{
+.headling {
     margin-bottom: 40px;
+}
+
+.line {
+    display: flex;
+    justify-content: space-between;
+    padding: 17px 0;
+    max-width: 512px;
+
+    span {
+        color: #9796a1;
+    }
+}
+
+.hr {
+    width: 512px;
+    margin: 0;
+    border: 1px solid #f1f2f3;
+}
+
+.text {
+    color: #000;
+    font-size: 16px;
+    font-style: normal;
+    line-height: normal;
+    font-weight: 400;
+}
+
+.price {
+    color: #000;
+    font-size: 19px;
+    font-style: normal;
+    line-height: normal;
+    font-weight: 400;
 }
